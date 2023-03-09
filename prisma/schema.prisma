@@ -18,6 +18,8 @@ model User {
   created_at    DateTime @default(now())
   updated_at    DateTime @updatedAt
 
+  CheckIn CheckIn[]
+
   @@map("users")
 }
 
@@ -29,6 +31,8 @@ model Gym {
   latitude    Decimal
   longitude   Decimal
 
+  CheckIn CheckIn[]
+
   @@map("gyms")
 }
 
@@ -36,6 +40,11 @@ model CheckIn {
   id           String    @id @default(uuid())
   created_at   DateTime  @default(now())
   validated_at DateTime?
+
+  user    User   @relation(fields: [user_id], references: [id])
+  gym     Gym    @relation(fields: [gym_id], references: [id])
+  user_id String
+  gym_id  String
 
   @@map("check_ins")
 }
