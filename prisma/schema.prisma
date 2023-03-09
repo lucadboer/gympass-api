@@ -6,6 +6,36 @@ generator client {
 }
 
 datasource db {
-  provider = "mysql"
+  provider = "postgresql"
   url      = env("DATABASE_URL")
+}
+
+model User {
+  id            String   @id @default(uuid())
+  name          String
+  email         String   @unique
+  password_hash String
+  created_at    DateTime @default(now())
+  updated_at    DateTime @updatedAt
+
+  @@map("users")
+}
+
+model Gym {
+  id          String  @id @default(uuid())
+  title       String
+  description String?
+  phone       String?
+  latitude    Decimal
+  longitude   Decimal
+
+  @@map("gyms")
+}
+
+model CheckIn {
+  id           String    @id @default(uuid())
+  created_at   DateTime  @default(now())
+  validated_at DateTime?
+
+  @@map("check_ins")
 }
