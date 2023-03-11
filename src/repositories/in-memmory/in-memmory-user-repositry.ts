@@ -5,7 +5,7 @@ import { randomUUID } from 'node:crypto'
 export class InMemmoryUserRepository implements UserRepository {
   public items: User[] = []
 
-  async findByEmail(email: string): Promise<User | null> {
+  async findByEmail(email: string) {
     const user = this.items.find((item) => item.email === email)
 
     if (!user) {
@@ -22,6 +22,7 @@ export class InMemmoryUserRepository implements UserRepository {
       email: data.email,
       password_hash: data.password_hash,
       created_at: new Date(),
+      updated_at: new Date(),
     }
 
     this.items.push(user)
