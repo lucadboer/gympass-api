@@ -13,7 +13,7 @@ interface RegisterServiceResponse {
   user: User
 }
 
-export class RegisterMember {
+export class RegisterService {
   constructor(private usersRepository: UserRepository) {}
 
   async execute({
