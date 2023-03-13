@@ -16,7 +16,7 @@ export class GetUserProfileService {
   async execute({
     userId,
   }: GetUserProfileServiceRequest): Promise<GetUserProfileServiceResponse> {
-    const user = await this.userRepository.findByUserId(userId)
+    const user = await this.userRepository.findById(userId)
 
     if (!user) {
       throw new ResourcesNotFoundError()
