@@ -14,7 +14,7 @@ app.setErrorHandler((error, _, reply) => {
       issues: error.format(),
     })
   }
-  if (env.NODE_ENV !== 'production') {
+  if (env.NODE_ENV !== 'dev') {
     console.error(error)
   }
 

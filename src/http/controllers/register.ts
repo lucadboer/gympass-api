@@ -1,4 +1,4 @@
-import { PrismaUserRepository } from '@/repositories/prisma-users-repository'
+import { PrismaUserRepository } from '@/repositories/prisma/prisma-users-repository'
 import { UserAlreadyExistError } from '@/services/errors/user-already-exist-error'
 import { RegisterService } from '@/services/register'
 import { FastifyReply, FastifyRequest } from 'fastify'
