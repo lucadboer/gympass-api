@@ -1,8 +1,9 @@
 import { InMemmoryCheckInRepository } from '@/repositories/in-memmory/in-memmory-check-in-repository'
 import { InMemmoryGymRepository } from '@/repositories/in-memmory/in-memmory-gym-repository'
-import { Decimal } from '@prisma/client/runtime'
 import { afterEach, beforeEach, describe, expect, it, vi } from 'vitest'
 import { CheckInService } from './check-in'
+import { MaxDistanceError } from './errors/max-distance-error'
+import { MaxNumberOfCheckInsError } from './errors/max-number-check-ins-error'
 
 let checkInRepository: InMemmoryCheckInRepository
 let gymRepository: InMemmoryGymRepository
@@ -17,13 +18,13 @@ describe('Check-in Service', async () => {
 
     vi.useFakeTimers()
 
-    gymRepository.items.push({
+    gymRepository.create({
       id: 'gym-01',
       title: 'Test Academy',
       description: '',
       phone: '',
-      latitude: new Decimal(-21.2473928),
-      longitude: new Decimal(-48.5015737),
+      latitude: -21.2473928,
+      longitude: -48.5015737,
     })
   })
 
@@ -52,15 +53,14 @@ describe('Check-in Service', async () => {
       userLongitude: -48.5015737,
     })
 
-    await expect(
-      async () =>
-        await sut.execute({
-          gymId: 'gym-01',
-          userId: 'user-01',
-          userLatitude: -21.2473928,
-          userLongitude: -48.5015737,
-        }),
-    ).rejects.toBeInstanceOf(Error)
+    await expect(() =>
+      sut.execute({
+        gymId: 'gym-01',
+        userId: 'user-01',
+        userLatitude: -21.2473928,
+        userLongitude: -48.5015737,
+      }),
+    ).rejects.toBeInstanceOf(MaxNumberOfCheckInsError)
   })
 
   it('should be able to check in diff days', async () => {
@@ -85,23 +85,23 @@ describe('Check-in Service', async () => {
     expect(checkIn.id).toEqual(expect.any(String))
   })
 
-  it('should not be able to check in distance', async () => {
-    gymRepository.items.push({
+  it('should not be able to check in on distant gym', async () => {
+    gymRepository.create({
       id: 'gym-02',
       title: 'Test Academy',
       description: '',
       phone: '',
-      latitude: new Decimal(-21.216664),
-      longitude: new Decimal(-48.4429476),
+      latitude: -21.216664,
+      longitude: -48.4429476,
     })
 
-    await expect(() => {
+    await expect(() =>
       sut.execute({
         gymId: 'gym-02',
         userId: 'user-01',
         userLatitude: -21.2473928,
         userLongitude: -48.5015737,
-      })
-    }).rejects.toBeInstanceOf(Error)
+      }),
+    ).rejects.toBeInstanceOf(MaxDistanceError)
   })
 })
